@@ -55,7 +55,13 @@ function formatBytes(n?: number): string | null {
 export default function BookDetail({ book }: Props) {
   const cls = classDisplay(book.class)
   const subj = subjectDisplay(book.subject)
-  const mergedBookUrl = book.downloadUrl ?? `${NCERT_BASE}/textbook/pdf/${book.bookCode}.pdf`
+  // NCERT publishes per-chapter PDFs (chapter.url), not a single merged book
+  // PDF, and no merged file is hosted. So the primary action links to the
+  // first chapter's real PDF when a merged downloadUrl isn't provided; the
+  // full chapter list below has every working per-chapter download.
+  const firstChapterUrl = book.chapters?.[0]?.url
+  const mergedBookUrl = book.downloadUrl ?? firstChapterUrl ?? `${NCERT_BASE}/textbook.php`
+  const hasMerged = Boolean(book.downloadUrl)
   const safeTitle = book.title.replace(/[^a-z0-9]/gi, '_')
   const sizeLabel = formatBytes((book as BookMetadata & { fileSize?: number }).fileSize)
   const cover = (book as BookMetadata & { coverImage?: string }).coverImage
@@ -82,13 +88,15 @@ export default function BookDetail({ book }: Props) {
 
           <a
             href={mergedBookUrl}
-            download={`${book.bookCode}-${safeTitle}.pdf`}
+            {...(hasMerged ? { download: `${book.bookCode}-${safeTitle}.pdf` } : {})}
             target="_blank"
             rel="noopener noreferrer"
             className="bd-download mono"
             data-no-print
           >
-            [ Download PDF{sizeLabel ? ` · ${sizeLabel}` : ''} ]
+            {hasMerged
+              ? `[ Download full PDF${sizeLabel ? ` · ${sizeLabel}` : ''} ]`
+              : '[ Open on NCERT ↗ ]'}
           </a>
         </aside>
 
