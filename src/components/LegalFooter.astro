@@ -30,16 +30,16 @@ const links = [
   </div>
 </div>
 <style>
-  .legal-footer { border-top: 1px solid var(--rule); }
+  .legal-footer { border-top: 1px solid var(--rule-line); }
   .lf-inner {
-    max-width: 1200px;
+    max-width: var(--spine-max);
     margin: 0 auto;
-    padding: 20px 16px 32px;
+    padding: 20px clamp(1.25rem, 4vw, 2.5rem) 32px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-  .lf-bio { margin: 0; color: var(--ink-mute); font-size: 13px; line-height: 1.55; max-width: 60ch; }
+  .lf-bio { margin: 0; color: var(--mist); font-size: .95rem; line-height: 1.55; max-width: 60ch; }
   .lf-links {
     list-style: none;
     margin: 0;
@@ -49,19 +49,19 @@ const links = [
     gap: 6px 16px;
   }
   .lf-links a {
-    color: var(--ink-mute);
+    color: var(--mist);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: .7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
   }
-  .lf-links a:hover { color: var(--cinnabar); }
+  .lf-links a:hover { color: var(--blue); }
   .lf-copy {
     margin: 0;
-    color: var(--ink-mute);
+    color: var(--mist);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: .7rem;
     letter-spacing: 0.04em;
   }
 </style>

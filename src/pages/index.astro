@@ -1,18 +1,10 @@
 ---
-import PickerHero from '~/components/PickerHero.tsx'
 /*
- * Home — 3-step picker hero per v0 locked design (2026-06-22).
- *
- * Signature: 3 CASCADING COLUMNS (not a wizard).
- *   Col 1: Class (Pre-K, 1..12) — buttons in indigo
- *   Col 2: Subject (revealed once Class picked) — saffron when active
- *   Col 3: Language (English / Hindi) — toggle
- *   CTA below: "Download book" — enabled once all 3 picked.
- *
- * Data comes from data/books.json via loadCatalog(). Subjects are filtered
- * per class. Click on CTA navigates to the existing /[class]/[subject]/[lang]/
- * book page (or directly to the PDF URL when we have one in catalog).
+ * Home — the Board. Hero thesis = a school blackboard on which the reader
+ * chalks in Class → Subject → Language and opens the book. Signature element =
+ * Board (Shelf.tsx). Everything around it stays quiet.
  */
+import Board from '~/components/Shelf.tsx'
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import { CLASSES, classLabel, loadCatalog, subjectLabel } from '~/lib/catalog'
 import { SITE_CONFIG } from '~/lib/siteConfig'
@@ -23,14 +15,13 @@ const classLabelMap: Record<string, string> = {}
 for (const c of CLASSES) classLabelMap[c] = classLabel(c)
 
 const subjectLabelMap: Record<string, string> = {}
-for (const e of catalog) {
-  if (!subjectLabelMap[e.subject]) subjectLabelMap[e.subject] = subjectLabel(e.subject)
-}
-// Ensure fallback subjects are labelled too.
+for (const e of catalog) if (!subjectLabelMap[e.subject]) subjectLabelMap[e.subject] = subjectLabel(e.subject)
 for (const s of ['math', 'science', 'english', 'hindi', 'social-science', 'evs']) {
   if (!subjectLabelMap[s]) subjectLabelMap[s] = subjectLabel(s)
 }
 
+const bookCount = catalog.length
+const classCount = new Set(catalog.map((e) => e.class)).size
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -41,26 +32,19 @@ const jsonLd = {
 }
 ---
 
-<BaseLayout
-  title={`${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`}
-  description={SITE_CONFIG.description}
-  jsonLd={jsonLd}
->
-  <div class="hero-wrap">
-    <header class="hero-head">
-      <p class="hero-eyebrow">NCERT · K–12 · ENGLISH · हिंदी</p>
-      <h1 class="hero-title">
-        Every NCERT textbook,<br />
-        <span class="hero-title-accent">merged into one PDF.</span>
-      </h1>
-      <p class="hero-lede">
-        Pick a class, subject, and language. Download the whole book as a single
-        PDF — built from the official ncert.nic.in chapter files, shipped via
-        GitHub Releases. No ads, no popups, no sign-in.
+<BaseLayout title={`${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`} description={SITE_CONFIG.description} jsonLd={jsonLd}>
+  <div class="home spine">
+    <header class="home-head">
+      <p class="home-eyebrow">NCERT textbooks · Pre-K to Class XII · English &amp; हिंदी</p>
+      <h1 class="home-title">Chalk in the book you need.</h1>
+      <p class="home-lede">
+        Every NCERT textbook, one whole-book PDF, keyed by class and subject.
+        No install, no sign-in to read — pick below and it opens straight from
+        the official chapter files.
       </p>
     </header>
 
-    <PickerHero
+    <Board
       client:load
       entries={catalog}
       classes={[...CLASSES]}
@@ -68,238 +52,68 @@ const jsonLd = {
       subjectLabel={subjectLabelMap}
     />
 
-    <p class="hero-foot">
-      <a href="/browse/">Browse the full catalogue →</a>
+    <dl class="home-stats" aria-label="At a glance">
+      <div><dt>Books</dt><dd>{bookCount}</dd></div>
+      <div><dt>Classes</dt><dd>{classCount}</dd></div>
+      <div><dt>Cost</dt><dd>Free</dd></div>
+    </dl>
+
+    <p class="home-foot">
+      Prefer a list? <a href="/browse/">Browse the whole catalogue</a> ·
+      <a href="/search/">search by chapter</a>.
     </p>
   </div>
 </BaseLayout>
 
 <style>
-  .hero-wrap {
-    max-width: 1120px;
-    margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem) 3rem;
+  .home { padding-block: clamp(1.75rem, 5vw, 3rem) 3rem; }
+  .home-head { max-width: 60ch; }
+  .home-eyebrow {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: .74rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--mist);
   }
-
-  .hero-head {
-    padding-block: clamp(1rem, 4vw, 2rem) 1.5rem;
-  }
-  .hero-eyebrow {
-    margin: 0 0 0.875rem;
-    font-family: var(--font-utility);
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-  .hero-title {
+  .home-title {
     margin: 0;
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2.25rem, 5.5vw, 3.5rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: var(--color-fg);
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6.5vw, 4.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--ink);
   }
-  .hero-title-accent {
-    color: var(--color-accent);
-    border-bottom: 4px solid var(--color-saffron);
-    padding-bottom: 0.05em;
+  .home-title::after {
+    content: ''; display: block; width: 2.6em; height: 3px; margin-top: .5rem;
+    background: var(--ochre); border-radius: 2px; transform: rotate(-0.6deg);
   }
-  .hero-lede {
-    margin: 1.125rem 0 0;
-    color: var(--color-muted);
-    font-size: 1.0625rem;
-    max-width: 60ch;
-    line-height: 1.6;
+  .home-lede {
+    margin: 1.1rem 0 0;
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--mist);
   }
 
-  .hero-foot {
-    margin-top: 2rem;
-    font-family: var(--font-utility);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
+  .home-stats {
+    display: flex; flex-wrap: wrap; gap: 0 2.75rem; margin: 2.25rem 0 0; padding: 0;
   }
-  .hero-foot a {
-    color: var(--color-accent);
-    text-decoration: none;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 2px;
+  .home-stats > div { display: flex; flex-direction: column; }
+  .home-stats dt {
+    font-family: var(--font-mono); font-size: .66rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--mist); order: 2;
   }
-  .hero-foot a:hover {
-    border-bottom-color: var(--color-accent);
+  .home-stats dd {
+    margin: 0; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.9rem; line-height: 1; color: var(--ink); order: 1;
   }
 
-  /* Picker — 3 cascading columns. Scoped styles get hoisted to the page so
-     they're available to the React island (Astro scopes via data- attrs by
-     default, so we use :global to reach the island's class names). */
-  :global(.picker) {
-    margin-top: 1.75rem;
+  .home-foot {
+    margin-top: 2.25rem;
+    font-family: var(--font-mono);
+    font-size: .82rem;
+    letter-spacing: .02em;
+    color: var(--mist);
   }
-  :global(.picker-grid) {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1rem;
-    background: #faf6ec;
-    border: 1px solid var(--color-border);
-    padding: clamp(0.75rem, 2vw, 1.25rem);
-  }
-  @media (max-width: 880px) {
-    :global(.picker-grid) {
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-    }
-  }
-
-  :global(.picker-col) {
-    display: flex;
-    flex-direction: column;
-    min-height: 280px;
-    padding: 0.75rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg);
-    transition: opacity 0.15s ease;
-  }
-  :global(.picker-col--disabled) {
-    opacity: 0.55;
-  }
-  :global(.picker-head) {
-    display: flex;
-    align-items: baseline;
-    gap: 0.625rem;
-    margin-bottom: 0.875rem;
-    padding-bottom: 0.625rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-  :global(.picker-step) {
-    font-family: var(--font-utility);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--color-saffron);
-    font-weight: 600;
-  }
-  :global(.picker-title) {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-fg);
-    letter-spacing: -0.01em;
-  }
-
-  :global(.picker-options) {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-content: flex-start;
-  }
-  :global(.picker-options--classes) {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.5rem;
-  }
-  :global(.picker-hint) {
-    margin: 0;
-    font-family: var(--font-utility);
-    font-size: 12px;
-    color: var(--color-muted);
-    letter-spacing: 0.04em;
-  }
-
-  :global(.opt) {
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--color-bg);
-    color: var(--color-fg);
-    border: 1px solid var(--color-border);
-    padding: 0.5rem 0.75rem;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.1s ease;
-    border-radius: 0;
-  }
-  :global(.opt:hover) {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-  :global(.opt:focus-visible) {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  /* Class buttons — indigo when active */
-  :global(.opt--class.opt--active) {
-    background: var(--color-accent);
-    color: #faf6ec;
-    border-color: var(--color-accent);
-  }
-  /* Subject — saffron when active */
-  :global(.opt--subject.opt--active) {
-    background: var(--color-saffron);
-    color: #1a1a1a;
-    border-color: var(--color-saffron);
-  }
-  /* Language — indigo outlined when active */
-  :global(.opt--lang) {
-    flex: 1 1 auto;
-    min-width: 96px;
-  }
-  :global(.opt--lang.opt--active) {
-    background: var(--color-accent);
-    color: #faf6ec;
-    border-color: var(--color-accent);
-  }
-
-  :global(.picker-cta) {
-    margin-top: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1rem 1.125rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg);
-  }
-  :global(.picker-btn) {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--color-accent);
-    color: #faf6ec;
-    border: 1px solid var(--color-accent);
-    padding: 0.75rem 1.5rem;
-    font-family: var(--font-display);
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    text-decoration: none;
-    transition: all 0.1s ease;
-    cursor: pointer;
-  }
-  :global(.picker-btn:hover) {
-    background: #1f1c5c;
-  }
-  :global(.picker-btn--disabled) {
-    background: #d6d0c2;
-    color: var(--color-muted);
-    border-color: var(--color-border);
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-  :global(.picker-summary) {
-    margin: 0;
-    font-family: var(--font-utility);
-    font-size: 12px;
-    color: var(--color-muted);
-    letter-spacing: 0.04em;
-  }
-  :global(.picker-summary strong) {
-    color: var(--color-fg);
-    font-weight: 600;
-  }
+  .home-foot a { color: var(--sage); text-decoration: underline; text-underline-offset: 3px; }
+  .home-foot a:hover { color: var(--ochre-deep); }
 </style>

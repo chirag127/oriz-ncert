@@ -41,25 +41,25 @@ const { actions } = Astro.props
       grid-auto-columns: 1fr;
       height: 64px;
       background: var(--paper);
-      border-top: 1px solid var(--rule);
+      border-top: 1px solid var(--rule-line);
     }
     .bb-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      color: var(--ink-mute);
+      gap: 3px;
+      color: var(--mist);
       text-decoration: none;
       cursor: pointer;
     }
     .bb-item:hover,
-    .bb-item:focus-visible { color: var(--cinnabar); }
+    .bb-item:focus-visible { color: var(--blue); }
     .bb-icon { font-size: 18px; line-height: 1; }
     .bb-label {
       font-family: var(--font-mono);
       font-size: 10px;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
   }

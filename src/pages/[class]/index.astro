@@ -1,9 +1,7 @@
 ---
 /*
- * /[class]/index.astro — subject picker for a given class.
- *
- * Lists every (subject × language) tile available in books.json for the
- * selected class. Each tile links to /[class]/[subject]/[lang]/.
+ * /[class]/ — the shelf for one class. Subject cards, coloured by discipline,
+ * each opening the book download page.
  */
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import { CLASSES, classLabel, langLabel, loadCatalog, subjectLabel } from '~/lib/catalog'
@@ -14,27 +12,35 @@ export function getStaticPaths() {
 
 const { class: cls } = Astro.params
 const entries = loadCatalog().filter((b) => b.class === cls)
-const title = `${classLabel(cls as string)} — NCERT`
+const label = classLabel(cls as string)
+const title = `${label} — oriz · ncert`
+
+const DISC: Record<string, string> = {
+  math: 'maths', science: 'science', physics: 'science', chemistry: 'science', biology: 'science', evs: 'science',
+  english: 'lang', hindi: 'lang', rimjhim: 'early',
+}
+const disc = (s: string) => DISC[s] ?? 'social'
 ---
 
-<BaseLayout title={title} description={`NCERT textbooks for ${classLabel(cls as string)}.`}>
+<BaseLayout title={title} description={`NCERT textbooks for ${label} — one merged PDF each.`}>
   <div class="spine">
     <header class="page-head">
-      <p class="eyebrow mono"><a href="/">NCERT</a> / {classLabel(cls as string).toUpperCase()}</p>
-      <h1>{classLabel(cls as string)}.</h1>
-      <p class="lede">Pick a subject. PDFs open from GitHub releases.</p>
+      <p class="eyebrow"><a href="/">NCERT</a> / {label}</p>
+      <h1>{label}</h1>
+      <p class="lede">Pick a subject. Each book opens as a single PDF.</p>
     </header>
 
     {entries.length === 0 ? (
-      <p class="empty">No books indexed yet for this class.</p>
+      <p class="empty">No books shelved for this class yet. <a href="/browse/">Browse everything →</a></p>
     ) : (
-      <ul class="tile-grid">
+      <ul class="subj-grid">
         {entries.map((b) => (
-          <li class="tile">
+          <li class="subj-card" data-disc={disc(b.subject)}>
             <a href={`/${b.class}/${b.subject}/${b.lang}/`}>
-              <span class="tile-subject">{subjectLabel(b.subject)}</span>
-              <span class="tile-meta mono">{langLabel(b.lang)}</span>
-              <span class="tile-title">{b.title}</span>
+              <span class="sc-band" aria-hidden="true"></span>
+              <span class="sc-subject">{subjectLabel(b.subject)}</span>
+              <span class="sc-title">{b.title}</span>
+              <span class="sc-lang mono">{langLabel(b.lang)}</span>
             </a>
           </li>
         ))}
@@ -44,50 +50,26 @@ const title = `${classLabel(cls as string)} — NCERT`
 </BaseLayout>
 
 <style>
-  .page-head {
-    padding-block: clamp(1.5rem, 4vw, 2.5rem) 1.25rem;
-    border-bottom: 1px solid var(--rule);
+  .subj-grid {
+    list-style: none; padding: 0; margin: 1.75rem 0 3rem;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px;
   }
-  .eyebrow {
-    margin: 0 0 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
+  .subj-card a {
+    position: relative; display: flex; flex-direction: column; gap: .35rem;
+    padding: 1.1rem 1rem 1rem 1.25rem;
+    background: var(--paper-2); border: 1px solid var(--rule-line);
+    text-decoration: none; color: var(--ink); min-height: 118px;
+    transition: border-color .12s, transform .12s;
   }
-  .eyebrow a { color: inherit; text-decoration: none; }
-  .eyebrow a:hover { color: var(--cinnabar); }
-  h1 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    line-height: 1.05;
-  }
-  .lede { margin: 0.75rem 0 0; color: var(--ink-mute); max-width: 60ch; }
-  .tile-grid {
-    list-style: none;
-    padding: 0;
-    margin: 1.5rem 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-  }
-  .tile a {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    padding: 1rem;
-    background: var(--card, #1a1d24);
-    border: 1px solid var(--rule);
-    text-decoration: none;
-    color: var(--ink);
-    min-height: 100px;
-  }
-  .tile a:hover { border-color: var(--cinnabar); }
-  .tile-subject { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; }
-  .tile-meta { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cinnabar); }
-  .tile-title { font-size: 0.875rem; color: var(--ink-mute); }
-  .empty { padding: 2rem 0; color: var(--ink-mute); }
+  .subj-card a:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .sc-band { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--spine-social); }
+  .subj-card[data-disc='maths'] .sc-band { background: var(--spine-maths); }
+  .subj-card[data-disc='science'] .sc-band { background: var(--spine-science); }
+  .subj-card[data-disc='lang'] .sc-band { background: var(--spine-lang); }
+  .subj-card[data-disc='early'] .sc-band { background: var(--spine-early); }
+  .sc-subject { font-family: var(--font-display); font-size: 1.2rem; font-weight: 500; font-variation-settings: 'opsz' 40; }
+  .sc-title { font-size: .95rem; color: var(--mist); line-height: 1.35; }
+  .sc-lang { margin-top: auto; font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); }
+  .empty { padding: 2rem 0; color: var(--mist); }
+  .empty a { color: var(--blue); }
 </style>

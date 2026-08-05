@@ -1,126 +1,92 @@
 ---
 /*
- * Wordmark — `oriz` set in IBM Plex Serif with a cinnabar hairline strike
- * through the `z` glyph. Copied verbatim from oriz-home/src/components/
- * Wordmark.astro EXCEPT the subtitle separator: per the v2 books brief the
- * separator is a Cinnabar middot (`·`), NOT a forward slash, because the
- * middot belongs to the catalogue-card metaphor's vocabulary.
- *
- * The strike colour is cinnabar on this site (vs vermilion on oriz-home).
- *
- *   <Wordmark subtitle="books" />   →  oriz · books
- *   <Wordmark subtitle="account" /> →  oriz · account
- *   <Wordmark />                    →  oriz (bare)
+ * Wordmark — "oriz" set in the slab display face, drawn like chalk. A yellow
+ * chalk-tick underscores the mark (the teacher's underline on the board).
+ * Optional subtitle after an ochre middot. Links to https://oriz.in by default
+ * (the oriz.in wordmark in chrome).
  */
-
 interface Props {
-  /** Sub-section name — rendered after a cinnabar middot in cinnabar italic. */
+  /** Sub-section name after an ochre middot. */
   subtitle?: string
   /** Display size in CSS pixels. */
   size?: number
-  /** Wrap the mark in an <a href="/"> — defaults null (no link). */
+  /** Link target. Defaults to the oriz.in hub; pass '/' for the home link. */
   href?: string | null
-  /** Render-only mode for the masthead (no link wrapper). */
-  asHeading?: boolean
+  /** Render on the dark board (chalk-white ink) instead of paper. */
+  onBoard?: boolean
 }
-
-const { subtitle, size = 96, href = null, asHeading = false } = Astro.props
-const Tag = asHeading ? 'h1' : ('div' as const)
+const { subtitle, size = 22, href = 'https://oriz.in', onBoard = false } = Astro.props
+const external = href?.startsWith('http')
+const cls = `wordmark${onBoard ? ' wordmark--board' : ''}`
 ---
 
 {
   href ? (
-    <a class="wordmark-link" href={href} aria-label={subtitle ? `oriz · ${subtitle}` : 'oriz'}>
-      <Tag class="wordmark" style={`--wm-size: ${size}px;`}>
-        <span class="wordmark-mark">
-          <span class="wordmark-letter">o</span>
-          <span class="wordmark-letter">r</span>
-          <span class="wordmark-letter">i</span>
-          <span class="wordmark-letter wordmark-z">
-            z
-            <span class="wordmark-strike" aria-hidden="true" />
-          </span>
-        </span>
+    <a
+      class="wordmark-link"
+      href={href}
+      aria-label={subtitle ? `oriz · ${subtitle}` : 'oriz.in'}
+      {...(external ? { rel: 'noopener' } : {})}
+    >
+      <span class={cls} style={`--wm-size: ${size}px;`}>
+        <span class="wm-mark">oriz<span class="wm-chalk" aria-hidden="true" /></span>
         {subtitle && (
           <>
-            <span class="wordmark-sep" aria-hidden="true">·</span>
-            <span class="wordmark-sub">{subtitle}</span>
+            <span class="wm-sep" aria-hidden="true">·</span>
+            <span class="wm-sub">{subtitle}</span>
           </>
         )}
-      </Tag>
+      </span>
     </a>
   ) : (
-    <Tag class="wordmark" style={`--wm-size: ${size}px;`}>
-      <span class="wordmark-mark">
-        <span class="wordmark-letter">o</span>
-        <span class="wordmark-letter">r</span>
-        <span class="wordmark-letter">i</span>
-        <span class="wordmark-letter wordmark-z">
-          z
-          <span class="wordmark-strike" aria-hidden="true" />
-        </span>
-      </span>
+    <span class={cls} style={`--wm-size: ${size}px;`}>
+      <span class="wm-mark">oriz<span class="wm-chalk" aria-hidden="true" /></span>
       {subtitle && (
         <>
-          <span class="wordmark-sep" aria-hidden="true">·</span>
-          <span class="wordmark-sub">{subtitle}</span>
+          <span class="wm-sep" aria-hidden="true">·</span>
+          <span class="wm-sub">{subtitle}</span>
         </>
       )}
-    </Tag>
+    </span>
   )
 }
 
 <style>
-  .wordmark-link {
-    display: inline-block;
-    color: inherit;
-    text-decoration: none;
-  }
+  .wordmark-link { display: inline-flex; color: inherit; text-decoration: none; }
   .wordmark {
     display: inline-flex;
     align-items: baseline;
-    gap: 0.18em;
-    margin: 0;
+    gap: 0.28em;
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: var(--wm-size, 96px);
+    font-size: var(--wm-size, 22px);
     line-height: 1;
-    letter-spacing: 0.005em;
+    letter-spacing: -0.02em;
     color: var(--ink);
   }
-  .wordmark-mark {
-    display: inline-flex;
-    align-items: baseline;
-  }
-  .wordmark-letter {
-    position: relative;
-    display: inline-block;
-  }
-  .wordmark-z {
-    /* The glyph holds the strike — strike must extend 0.15em past on each side. */
-    padding-inline: 0.15em;
-  }
-  .wordmark-strike {
+  .wordmark--board { color: var(--chalk); }
+  .wm-mark { position: relative; }
+  /* yellow chalk underline — a hand-drawn tick under the mark */
+  .wm-chalk {
     position: absolute;
-    inset: 50% 0 auto 0;
-    height: 0.04em;
-    background: var(--cinnabar);
-    transform: translateY(-50%);
+    left: -0.04em;
+    right: -0.04em;
+    bottom: -0.14em;
+    height: max(2px, 0.09em);
+    background: var(--ochre);
+    border-radius: 2px;
+    transform: rotate(-0.8deg);
     pointer-events: none;
   }
-  @media (max-width: 480px) {
-    .wordmark-strike {
-      height: max(1px, 0.04em);
-    }
+  .wm-sep { color: var(--ochre); font-weight: 700; }
+  .wm-sub {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.6em;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mist);
   }
-  .wordmark-sep {
-    margin-inline: 0.22em 0.22em;
-    color: var(--cinnabar);
-    font-weight: 600;
-  }
-  .wordmark-sub {
-    color: var(--cinnabar);
-    font-style: italic;
-    font-weight: 400;
-  }
+  .wordmark--board .wm-sub { color: var(--chalk-dim); }
+  .wordmark-link:hover .wm-chalk { background: var(--sage); }
 </style>

@@ -1,109 +1,87 @@
 ---
 /*
- * /browse — full list of every (class, subject, language) entry.
- * Lazy v0: a flat table, indigo links to the existing /[class]/[subject]/[lang]/ pages.
+ * /browse — the full catalogue as a card-index: every book listed by class,
+ * with a subject-coloured tab and a monospace call-number. Links to the book
+ * download page. Quiet; the shelf on the home page carries the boldness.
  */
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import { classLabel, langLabel, loadCatalog, subjectLabel } from '~/lib/catalog'
 
 const catalog = loadCatalog()
-const sorted = [...catalog].sort((a, b) => {
-  const ca = a.class === 'pre-primary' ? -1 : Number.parseInt(a.class, 10)
-  const cb = b.class === 'pre-primary' ? -1 : Number.parseInt(b.class, 10)
-  if (ca !== cb) return ca - cb
-  if (a.subject !== b.subject) return a.subject.localeCompare(b.subject)
-  return a.lang.localeCompare(b.lang)
-})
+const order = (c: string) => (c === 'pre-primary' ? -1 : Number.parseInt(c, 10))
+const classesInOrder = [...new Set(catalog.map((e) => e.class))].sort((a, b) => order(a) - order(b))
+
+const DISC: Record<string, string> = {
+  math: 'maths', science: 'science', physics: 'science', chemistry: 'science', biology: 'science', evs: 'science',
+  english: 'lang', hindi: 'lang', rimjhim: 'early',
+}
+const disc = (s: string) => DISC[s] ?? 'social'
+const total = catalog.length
 ---
 
-<BaseLayout title="Browse — NCERT" description="Every NCERT textbook, listed.">
-  <div class="browse-wrap">
-    <header class="browse-head">
-      <p class="eyebrow">CATALOGUE / BROWSE</p>
-      <h1>Browse the catalogue</h1>
-      <p class="lede">Every merged NCERT textbook PDF, by class × subject × language.</p>
+<BaseLayout title="Browse — oriz · ncert" description="Every NCERT textbook in the reading room, listed by class.">
+  <div class="spine">
+    <header class="page-head">
+      <p class="eyebrow"><a href="/">NCERT</a> / Catalogue</p>
+      <h1>The whole catalogue.</h1>
+      <p class="lede">{total} books, shelved by class. Each opens as one merged PDF.</p>
     </header>
 
-    <div class="browse-table" role="table">
-      <div class="browse-row browse-row--head" role="row">
-        <span role="columnheader">Class</span>
-        <span role="columnheader">Subject</span>
-        <span role="columnheader">Language</span>
-        <span role="columnheader">Title</span>
-      </div>
-      {sorted.map((e) => (
-        <a class="browse-row" role="row" href={`/${e.class}/${e.subject}/${e.lang}/`}>
-          <span role="cell">{classLabel(e.class)}</span>
-          <span role="cell">{subjectLabel(e.subject)}</span>
-          <span role="cell">{langLabel(e.lang)}</span>
-          <span role="cell">{e.title}</span>
-        </a>
-      ))}
-    </div>
+    {classesInOrder.map((cls) => {
+      const rows = catalog.filter((e) => e.class === cls)
+      return (
+        <section class="cat-class">
+          <h2 class="cat-h">
+            <a href={`/${cls}/`}>{classLabel(cls)}</a>
+            <span class="cat-count mono">{rows.length}</span>
+          </h2>
+          <ul class="cat-list">
+            {rows.map((e) => (
+              <li class="cat-card" data-disc={disc(e.subject)}>
+                <a href={`/${e.class}/${e.subject}/${e.lang}/`}>
+                  <span class="cc-tab" aria-hidden="true"></span>
+                  <span class="cc-body">
+                    <span class="cc-title">{e.title}</span>
+                    <span class="cc-meta mono">{subjectLabel(e.subject)} · {langLabel(e.lang)}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    })}
   </div>
 </BaseLayout>
 
 <style>
-  .browse-wrap {
-    max-width: 1120px;
-    margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem) 3rem;
+  .cat-class { padding-block: 1.75rem; border-bottom: 1px solid var(--rule-line); }
+  .cat-h {
+    display: flex; align-items: baseline; gap: .75rem;
+    margin: 0 0 1rem;
+    font-family: var(--font-display); font-weight: 500; font-size: 1.5rem;
+    font-variation-settings: 'opsz' 40;
   }
-  .browse-head {
-    margin-bottom: 2rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--color-border);
+  .cat-h a { color: var(--ink); text-decoration: none; }
+  .cat-h a:hover { color: var(--blue); }
+  .cat-count { font-family: var(--font-mono); font-size: .8rem; color: var(--mist); }
+  .cat-list {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;
   }
-  .browse-head .eyebrow {
-    font-family: var(--font-utility);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--color-muted);
-    margin: 0 0 0.75rem;
+  .cat-card a {
+    display: flex; gap: .75rem; align-items: stretch;
+    background: var(--paper-2); border: 1px solid var(--rule-line);
+    text-decoration: none; color: var(--ink); min-height: 66px;
+    transition: border-color .12s, transform .12s;
   }
-  .browse-head h1 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    color: var(--color-fg);
-    letter-spacing: -0.015em;
-  }
-  .browse-head .lede {
-    margin: 0.75rem 0 0;
-    color: var(--color-muted);
-    font-size: 1rem;
-  }
-  .browse-table {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--color-border);
-    background: #faf6ec;
-  }
-  .browse-row {
-    display: grid;
-    grid-template-columns: 100px 1.5fr 100px 2.5fr;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    color: var(--color-fg);
-    border-bottom: 1px solid var(--color-border);
-    font-size: 14px;
-  }
-  .browse-row:last-child { border-bottom: 0; }
-  .browse-row:hover { background: var(--color-bg); color: var(--color-accent); }
-  .browse-row--head {
-    background: var(--color-bg);
-    font-family: var(--font-utility);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    pointer-events: none;
-  }
-  @media (max-width: 720px) {
-    .browse-row { grid-template-columns: 60px 1fr 60px; }
-    .browse-row span:last-child { display: none; }
-    .browse-row--head span:last-child { display: none; }
-  }
+  .cat-card a:hover { border-color: var(--blue); transform: translateX(2px); }
+  .cc-tab { flex: 0 0 6px; background: var(--spine-social); }
+  .cat-card[data-disc='maths'] .cc-tab { background: var(--spine-maths); }
+  .cat-card[data-disc='science'] .cc-tab { background: var(--spine-science); }
+  .cat-card[data-disc='lang'] .cc-tab { background: var(--spine-lang); }
+  .cat-card[data-disc='early'] .cc-tab { background: var(--spine-early); }
+  .cc-body { display: flex; flex-direction: column; justify-content: center; gap: .2rem; padding: .6rem .75rem .6rem 0; }
+  .cc-title { font-family: var(--font-body); font-size: 1rem; line-height: 1.3; }
+  .cc-meta { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--mist); }
 </style>

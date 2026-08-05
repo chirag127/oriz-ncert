@@ -1,338 +1,133 @@
 @import 'tailwindcss';
 
 /*
- * oriz-books — v2 catalogue-on-wooden-desk tokens
- *
- * Surface: Ink Block #0E1014 (dark, the desk).
- * Cards: Card Bone #F4EDE0 (warm aged paper).
- * Primary accent: Cinnabar #E5482A (red, justified by NCERT cover heritage).
- *
- * 6 hex max per the v2 brief. Subject bands consume Cinnabar / Indigo Stamp /
- * Brass / Graphite. Brass also doubles as the punch-hole.
- *
- * No vermilion reserve here — red IS primary.
+ * global.css — "Register & Chalk". Base reset + typography + shared page
+ * primitives (.spine, .page-head, .prose). Tokens live in tokens.css.
  */
 
 @theme {
-  --font-display: 'IBM Plex Serif', 'GT Sectra', 'Source Serif 4', Georgia, serif;
-  --font-sans:
-    'IBM Plex Sans', 'IBM Plex Sans Devanagari', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  --container-spine: 1120px;
+  --font-display: 'Zilla Slab', 'Roboto Slab', Georgia, serif;
+  --font-sans: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --container-spine: 1160px;
 }
 
 @layer base {
-  :root {
-    color-scheme: dark;
-
-    /* Surface tokens — dark catalogue-drawer desk. */
-    --paper: #0e1014; /* Ink Block — the desk surface */
-    --paper-deep: #07090c; /* OLED variant */
-    --card: #f4ede0; /* Card Bone — catalogue card face */
-    --card-shade: #ebe2d2; /* aged variant for hover-row stripes */
-    --ink: #f4ede0; /* primary text on dark */
-    --ink-mute: #8a8579; /* pencil grey — secondary text on dark */
-    --rule: #2a2722; /* hairline on dark */
-
-    /* Subject + accent palette. */
-    --cinnabar: #e5482a; /* primary — Maths band, active filter, page underline */
-    --indigo: #2e3a8c; /* Indigo Stamp — Sciences band, link on Card Bone */
-    --brass: #a89968; /* Brass — punch-hole, Social Studies band */
-    --graphite: #3a3a3a; /* body text on Card Bone, Languages band */
-    --graphite-soft: #5a5a5a;
-
-    /* Card-context aliases (text painted ON Card Bone). */
-    --on-card: #3a3a3a;
-    --on-card-mute: #5a5a5a;
-    --on-card-rule: rgba(58, 58, 58, 0.15);
-
-    /* The shared AccountPanel + ContactForm styles reference --mustard /
-       --vermilion / --ledger / --highlighter (oriz-home tokens). Map them
-       to this site's palette so borrowed selectors still resolve. */
-    --mustard: var(--cinnabar);
-    --vermilion: var(--cinnabar);
-    --ledger: var(--brass);
-    --highlighter: var(--cinnabar);
-  }
-
-  /* Light mode — invert paper to Card Bone, ink to Graphite. */
-  @media (prefers-color-scheme: light) {
-    :root {
-      color-scheme: light;
-      --paper: #f4ede0;
-      --paper-deep: #ebe2d2;
-      --card: #faf6ec;
-      --card-shade: #efe7d6;
-      --ink: #1a1614;
-      --ink-mute: #5a5141;
-      --rule: #d6cdb8;
-      --cinnabar: #c43818;
-      --indigo: #1f2a72;
-      --brass: #8c7d4d;
-      --graphite: #1a1614;
-      --graphite-soft: #4a4035;
-      --on-card: #1a1614;
-      --on-card-mute: #4a4035;
-      --on-card-rule: rgba(26, 22, 20, 0.15);
-    }
-  }
-
-  @media (prefers-contrast: more) {
-    :root {
-      --paper: var(--paper-deep);
-    }
-  }
-
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
-    font-feature-settings:
-      'kern' 1,
-      'liga' 1;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
   }
 
   body {
+    margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.55;
-    overflow-y: scroll;
-    margin: 0;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Mono utility — slashed zero (ss20), tabular figures, no ligatures. */
-  code,
-  kbd,
-  pre,
-  samp,
-  .mono {
+  h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); letter-spacing: -0.01em; }
+
+  code, kbd, pre, samp, .mono {
     font-family: var(--font-mono);
-    font-feature-settings:
-      'tnum' 1,
-      'zero' 1,
-      'ss20' 1,
-      'calt' 0;
+    font-feature-settings: 'tnum' 1, 'zero' 1;
   }
 
+  a { color: var(--sage); text-decoration: none; }
+
   ::selection {
-    background: color-mix(in oklab, var(--cinnabar) 30%, transparent);
+    background: color-mix(in oklab, var(--ochre) 40%, transparent);
     color: var(--ink);
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
+  :focus-visible {
+    outline: 2px solid var(--sage);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
+
+  :lang(hi), [lang='hi'] { font-family: var(--font-deva); }
 }
 
-/* Catalogue spine — wider than oriz-home (cards need width). */
+/* --- Shared layout primitives --- */
 .spine {
-  max-width: var(--container-spine);
+  max-width: var(--spine-max);
   margin-inline: auto;
-  padding-inline: clamp(1.25rem, 4vw, 2rem);
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
 }
-
-/* Narrow column for prose pages (about, legal, contact). */
 .spine-prose {
-  max-width: 720px;
+  max-width: var(--prose-max);
   margin-inline: auto;
   padding-inline: clamp(1.25rem, 4vw, 2rem);
 }
+.hairline { height: 1px; background: var(--rule-line); border: 0; margin: 0; }
 
-.hairline {
-  height: 1px;
-  background: var(--rule);
-  border: 0;
-  margin: 0;
-}
-
-/* Page head + prose. */
+/* Page head — register-row rhythm: a mono eyebrow tab + slab title */
 .page-head {
-  padding-block: clamp(2rem, 6vw, 3.5rem) 1.5rem;
-  border-bottom: 1px solid var(--rule);
+  padding-block: clamp(2rem, 6vw, 3.25rem) 1.5rem;
+  border-bottom: 1px solid var(--rule-line);
 }
 .page-head .eyebrow {
+  margin: 0 0 0.8rem;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-mute);
-  margin: 0 0 0.875rem;
-  font-feature-settings:
-    'tnum' 1,
-    'zero' 1,
-    'ss20' 1,
-    'calt' 0;
+  color: var(--mist);
 }
-.page-head .eyebrow a {
-  color: var(--ink-mute);
-  text-decoration: none;
-}
-.page-head .eyebrow a:hover {
-  color: var(--cinnabar);
-}
+.page-head .eyebrow a { color: var(--mist); }
+.page-head .eyebrow a:hover { color: var(--sage); }
 .page-head h1 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(2rem, 5vw, 3rem);
-  line-height: 1.05;
-  letter-spacing: -0.005em;
   margin: 0;
-  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.2vw, 3.2rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
 }
 .page-head .lede {
   margin: 1rem 0 0;
-  color: var(--ink-mute);
-  font-size: 1.0625rem;
-  max-width: 60ch;
-}
-.page-head .meta {
-  margin: 0.75rem 0 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  font-feature-settings:
-    'tnum' 1,
-    'zero' 1,
-    'ss20' 1,
-    'calt' 0;
+  color: var(--mist);
+  font-size: 1.1rem;
+  max-width: 58ch;
 }
 
-.prose {
-  padding-block: 2.5rem 4rem;
-  color: var(--ink);
-  line-height: 1.75;
-  font-size: 1.0625rem;
-  font-family: var(--font-sans);
-}
-.prose .lede {
-  font-size: 1.1875rem;
-  color: var(--ink);
-  margin: 0 0 2rem;
-}
-.prose h2 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.5rem;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-  margin: 2.5rem 0 1rem;
-}
-.prose h3 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 1.1875rem;
-  color: var(--ink);
-  margin: 1.75rem 0 0.625rem;
-}
-.prose p {
-  margin: 0 0 1.25rem;
-  color: color-mix(in oklab, var(--ink) 92%, var(--paper));
-}
-.prose a {
-  color: var(--cinnabar);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  text-decoration-color: color-mix(in oklab, var(--cinnabar) 50%, transparent);
-}
-.prose a:hover {
-  text-decoration-color: var(--cinnabar);
-}
-.prose strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-.prose ul,
-.prose ol {
-  padding-left: 1.5rem;
-  margin: 0 0 1.25rem;
-}
-.prose li {
-  margin-bottom: 0.5rem;
-}
-.prose code {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  padding: 0.125em 0.375em;
-  background: color-mix(in oklab, var(--ink-mute) 20%, transparent);
-  color: var(--ink);
-  border-radius: 0;
-  font-feature-settings:
-    'tnum' 1,
-    'zero' 1,
-    'ss20' 1,
-    'calt' 0;
-}
-.prose blockquote {
-  border-left: 2px solid var(--rule);
-  padding-left: 1rem;
-  margin-left: 0;
-  color: var(--ink-mute);
-  font-style: italic;
-}
-.prose hr {
-  height: 1px;
-  background: var(--rule);
-  border: 0;
-  margin: 2.5rem 0;
-}
+/* Prose (about, legal, contact) */
+.prose { padding-block: 2.5rem 4rem; color: var(--ink); line-height: 1.7; font-size: 1.0625rem; }
+.prose .lede { font-size: 1.2rem; color: var(--ink); margin: 0 0 2rem; }
+.prose h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.55rem; margin: 2.5rem 0 1rem; }
+.prose h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; margin: 1.75rem 0 0.6rem; }
+.prose p { margin: 0 0 1.25rem; }
+.prose a { color: var(--sage); text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--sage) 45%, transparent); text-underline-offset: 3px; }
+.prose a:hover { text-decoration-color: var(--sage); }
+.prose strong { color: var(--ink); font-weight: 700; }
+.prose ul, .prose ol { padding-left: 1.5rem; margin: 0 0 1.25rem; }
+.prose li { margin-bottom: 0.5rem; }
+.prose code { font-family: var(--font-mono); font-size: 0.875em; padding: 0.1em 0.35em; background: var(--paper-2); border: 1px solid var(--rule-line); }
+.prose blockquote { border-left: 3px solid var(--ochre); padding-left: 1rem; margin-left: 0; color: var(--mist); }
+.prose hr { height: 1px; background: var(--rule-line); border: 0; margin: 2.5rem 0; }
 
-/* Skip link */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
 .skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  background: var(--cinnabar);
-  color: var(--card);
-  padding: 0.5rem 1rem;
-  z-index: 100;
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--sage); color: #fff; padding: 0.5rem 1rem;
+  font-family: var(--font-mono); font-size: 0.8rem;
 }
-.skip-link:focus {
-  left: 0;
-}
+.skip-link:focus { left: 0.5rem; top: 0.5rem; }
 
-/*
- * PRINT — book detail. Cover + spec sidebar + chapter list stay; chrome,
- * filters, download buttons hide. One A4 per book where possible.
- */
 @media print {
-  body {
-    background: white !important;
-    color: black !important;
-    font-size: 11pt;
-  }
-  .header,
-  .footer,
-  .filter-rail,
-  .bd-actions,
-  .bd-crumbs,
-  .skip-link,
-  [data-no-print] {
-    display: none !important;
-  }
-  a {
-    color: black !important;
-    text-decoration: none !important;
-  }
-  .bd-cover {
-    border-color: black !important;
-  }
-  .bd-grid {
-    grid-template-columns: 200px 1fr 180px !important;
-    gap: 1rem !important;
-  }
-  .bd-chapter:hover {
-    background: transparent !important;
-  }
-  .bd-chapter:hover .leader {
-    opacity: 1 !important;
-  }
+  body { background: #fff !important; color: #000 !important; }
+  .header, .footer, .ncert-footer, .bottombar, .sidebar, .skip-link, [data-no-print] { display: none !important; }
+  a { color: #000 !important; text-decoration: none !important; }
 }

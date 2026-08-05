@@ -1,105 +1,71 @@
 ---
 /*
- * ncert-app Footer — NCERT textbook directory surface.
- *
- * Signature element: a single saffron rule under the section header (the
- * one bold detail; the rest stays restrained library-card lines).
- * Browse by class / Languages / Download policy + LegalFooter.
- *
- * Palette: parchment #F4EDE0 / indigo #312E81 / saffron #F59E0B.
- * Type: Inter Tight display + Inter body + IBM Plex Mono utility.
+ * Footer — Register & Chalk. A class-timetable index: browse-by-class grid,
+ * the catalogue links, and a source note. Signature detail: each column
+ * heading carries a short ochre chalk-tick. Then the mandatory LegalFooter.
  */
 import LegalFooter from '~/components/LegalFooter.astro'
+import { CLASSES, classLabel } from '~/lib/catalog'
 
-const classes = [
-  { label: 'Class 1', href: '/1/' },
-  { label: 'Class 2', href: '/2/' },
-  { label: 'Class 3', href: '/3/' },
-  { label: 'Class 4', href: '/4/' },
-  { label: 'Class 5', href: '/5/' },
-  { label: 'Class 6', href: '/6/' },
-  { label: 'Class 7', href: '/7/' },
-  { label: 'Class 8', href: '/8/' },
-  { label: 'Class 9', href: '/9/' },
-  { label: 'Class 10', href: '/10/' },
-  { label: 'Class 11', href: '/11/' },
-  { label: 'Class 12', href: '/12/' },
-]
-const languages = [
-  { label: 'English', href: '/browse/?lang=english' },
-  { label: 'Hindi / हिन्दी', href: '/browse/?lang=hindi' },
-  { label: 'Urdu / اُردُو', href: '/browse/?lang=urdu' },
-  { label: 'Sanskrit', href: '/browse/?lang=sanskrit' },
+const classes = CLASSES.filter((c) => c !== 'pre-primary').map((c) => ({
+  label: classLabel(c),
+  href: `/${c}/`,
+}))
+const links = [
+  { label: 'Browse everything', href: '/browse/' },
+  { label: 'Search', href: '/search/' },
+  { label: 'About this directory', href: '/about/' },
 ]
 ---
-<footer class="ncert-footer" role="contentinfo">
-  <div class="nf-grid">
-    <div class="nf-col nf-col-classes">
-      <h3 class="nf-h"><span class="nf-rule" aria-hidden="true"></span>Browse by class</h3>
-      <ul class="nf-class-grid">
+<footer class="footer" role="contentinfo">
+  <div class="ft-grid spine">
+    <div class="ft-col ft-col--wide">
+      <h3 class="ft-h"><span class="ft-tag" aria-hidden="true"></span>Browse by class</h3>
+      <ul class="ft-classes">
         {classes.map((c) => <li><a href={c.href}>{c.label}</a></li>)}
       </ul>
     </div>
-    <div class="nf-col">
-      <h3 class="nf-h"><span class="nf-rule" aria-hidden="true"></span>Languages</h3>
+    <div class="ft-col">
+      <h3 class="ft-h"><span class="ft-tag" aria-hidden="true"></span>The catalogue</h3>
       <ul>
-        {languages.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
       </ul>
     </div>
-    <div class="nf-col">
-      <h3 class="nf-h"><span class="nf-rule" aria-hidden="true"></span>Download policy</h3>
-      <p class="nf-policy">
-        PDFs link directly to <a href="https://ncert.nic.in/" rel="noopener external">ncert.nic.in</a> —
-        we don't host textbook files. NCERT material is © NCERT. This directory is informational.
+    <div class="ft-col">
+      <h3 class="ft-h"><span class="ft-tag" aria-hidden="true"></span>Where the books come from</h3>
+      <p class="ft-note">
+        Books link straight to <a href="https://ncert.nic.in/" rel="noopener external">ncert.nic.in</a>
+        chapter files, merged into one PDF. We host no textbooks. NCERT material is © NCERT;
+        this directory is a finding aid — free, no sign-in to read or download.
       </p>
-      <ul>
-        <li><a href="/about/">About this directory</a></li>
-        <li><a href="/search/">Search</a></li>
-        <li><a href="/disclaimer/">Disclaimer</a></li>
-      </ul>
     </div>
   </div>
   <LegalFooter
-    appName="Oriz NCERT"
-    bio="Free NCERT textbook directory — 12 classes, 4 languages, direct ncert.nic.in links."
+    appName="oriz · ncert"
+    bio="Free NCERT textbooks — every class, every subject, one PDF each."
   />
 </footer>
 <style>
-  .ncert-footer {
-    margin-top: 4rem;
-    background: var(--paper-deep, #EBE2D2);
-    color: var(--color-fg, var(--ink));
-    border-top: 1px solid var(--color-border, var(--rule));
+  .footer { margin-top: 4rem; background: var(--paper-2); border-top: 1px solid var(--rule-line); }
+  .ft-grid {
+    display: grid; grid-template-columns: 1fr; gap: 32px;
+    padding-block: 44px 24px;
   }
-  .nf-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr; gap: 28px;
-    padding: 40px 16px 24px;
-  }
-  .nf-h {
+  .ft-h {
     margin: 0 0 14px;
-    font-family: var(--font-display, 'Inter Tight'), sans-serif;
-    font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em;
-    color: var(--color-accent, var(--indigo, #312e81)); font-weight: 600;
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--mist); font-weight: 400;
     display: flex; align-items: center; gap: 10px;
   }
-  .nf-rule {
-    display: inline-block; width: 28px; height: 2px;
-    background: var(--color-saffron, #F59E0B);
+  .ft-tag { display: inline-block; width: 26px; height: 3px; background: var(--ochre); border-radius: 2px; transform: rotate(-1deg); }
+  .ft-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; }
+  .ft-col a { color: var(--ink); font-size: 1rem; text-decoration: none; }
+  .ft-col a:hover { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+  .ft-classes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px 16px; }
+  .ft-classes a { font-family: var(--font-mono); font-size: .9rem; }
+  .ft-note { font-size: .95rem; line-height: 1.6; color: var(--mist); margin: 0; max-width: 42ch; }
+  .ft-note a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+  @media (min-width: 760px) {
+    .ft-grid { grid-template-columns: 1.5fr 1fr 1.3fr; gap: 40px; padding-block: 52px 28px; }
   }
-  .nf-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
-  .nf-col a {
-    color: var(--color-fg, var(--ink));
-    font-size: 14px; text-decoration: none;
-  }
-  .nf-col a:hover { color: var(--color-accent, var(--indigo, #312e81)); text-decoration: underline; }
-  .nf-class-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; }
-  .nf-class-grid a { font-family: var(--font-utility, 'IBM Plex Mono'), ui-monospace; font-size: 13px; }
-  .nf-policy {
-    font-size: 13px; line-height: 1.55;
-    color: var(--color-muted, var(--ink-mute)); margin: 0 0 12px;
-  }
-  .nf-policy a { color: var(--color-accent, var(--indigo, #312e81)); text-decoration: underline; }
-  @media (min-width: 768px) { .nf-grid { grid-template-columns: 1.4fr 1fr 1.2fr; gap: 36px; padding: 48px 24px 28px; } }
-  @media (min-width: 1024px) { .nf-grid { padding: 56px 24px 32px; } }
 </style>
