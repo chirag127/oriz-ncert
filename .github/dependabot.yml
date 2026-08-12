@@ -7,6 +7,7 @@ updates:
       day: "monday"
     open-pull-requests-limit: 5
     ignore:
+      - dependency-name: "@chirag127/*"   # workspace/path deps Dependabot can't resolve
       # file: protocol local workspace dep — not resolvable by Dependabot
       - dependency-name: "@chirag127/oz-ai"
     groups:
