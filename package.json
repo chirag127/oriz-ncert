@@ -23,7 +23,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.5",
     "@astrojs/sitemap": "^3.7.3",
-    "@chirag127/oz-ai": "file:../design-system/packages/oz-ai",
+    "@chirag127/oz-ai": "^0.3.3",
     "@clerk/clerk-react": "^5.55.0",
     "@tailwindcss/vite": "^4.3.2",
     "@vite-pwa/astro": "^1.2.0",
