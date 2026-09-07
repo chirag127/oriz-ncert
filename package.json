@@ -22,29 +22,29 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.5",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@chirag127/oz-ai": "^0.3.3",
     "@clerk/clerk-react": "^5.55.0",
     "@tailwindcss/vite": "^4.3.2",
     "@vite-pwa/astro": "^1.2.0",
     "astro": "^6.4.7",
-    "firebase": "^12.4.0",
+    "firebase": "^12.18.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.0",
-    "@biomejs/biome": "^2.5.2",
+    "@biomejs/biome": "^2.5.12",
     "@playwright/test": "^1.61.1",
-    "@types/node": "^26.1.0",
+    "@types/node": "^26.4.1",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react-dom": "^19.2.7",
     "@vitest/coverage-v8": "^4.1.9",
     "@vitest/ui": "^4.1.9",
-    "happy-dom": "^20.10.6",
+    "happy-dom": "^20.14.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9",
-    "wrangler": "^4.106.0"
+    "wrangler": "^4.129.0"
   }
 }
