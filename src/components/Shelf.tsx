@@ -12,7 +12,13 @@
 import { useEffect, useMemo, useState } from 'react'
 
 type Lang = 'en' | 'hi'
-interface Entry { class: string; subject: string; lang: Lang; title: string; pdf_url: string }
+interface Entry {
+  class: string
+  subject: string
+  lang: Lang
+  title: string
+  pdf_url: string
+}
 interface Props {
   entries: Entry[]
   classes: string[]
@@ -21,11 +27,24 @@ interface Props {
 }
 
 const DISCIPLINE: Record<string, string> = {
-  math: 'maths', science: 'science', physics: 'science', chemistry: 'science', biology: 'science',
-  english: 'lang', hindi: 'lang', evs: 'science', rimjhim: 'early',
-  'social-science': 'social', history: 'social', geography: 'social', economics: 'social',
-  'political-science': 'social', sociology: 'social', psychology: 'social',
-  accountancy: 'social', 'business-studies': 'social',
+  math: 'maths',
+  science: 'science',
+  physics: 'science',
+  chemistry: 'science',
+  biology: 'science',
+  english: 'lang',
+  hindi: 'lang',
+  evs: 'science',
+  rimjhim: 'early',
+  'social-science': 'social',
+  history: 'social',
+  geography: 'social',
+  economics: 'social',
+  'political-science': 'social',
+  sociology: 'social',
+  psychology: 'social',
+  accountancy: 'social',
+  'business-studies': 'social',
 }
 const subVar = (subject: string) => `var(--sub-${DISCIPLINE[subject] ?? 'social'})`
 
@@ -35,7 +54,9 @@ export default function Board({ entries, classes, classLabel, subjectLabel }: Pr
   const [lang, setLang] = useState<Lang | null>(null)
   const [mounted, setMounted] = useState(false)
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const subjects = useMemo(() => {
     if (!cls) return [] as string[]
@@ -56,8 +77,15 @@ export default function Board({ entries, classes, classLabel, subjectLabel }: Pr
 
   const target = chosen ? `/${cls}/${subject}/${lang}/` : null
 
-  const pickClass = (c: string) => { setCls(c); setSubject(null); setLang(null) }
-  const pickSubject = (s: string) => { setSubject(s); setLang(null) }
+  const pickClass = (c: string) => {
+    setCls(c)
+    setSubject(null)
+    setLang(null)
+  }
+  const pickSubject = (s: string) => {
+    setSubject(s)
+    setLang(null)
+  }
 
   return (
     <section className={`board ${mounted ? 'is-in' : ''}`} aria-label="Chalk in your book">
@@ -69,7 +97,7 @@ export default function Board({ entries, classes, classLabel, subjectLabel }: Pr
           {/* Line 1 — Class */}
           <fieldset className="line" style={{ ['--d' as string]: '0ms' }}>
             <legend className="line-key">Class</legend>
-            <div className="chalks" role="group" aria-label="Class">
+            <div className="chalks">
               {classes.map((c) => (
                 <button
                   key={c}
@@ -85,42 +113,50 @@ export default function Board({ entries, classes, classLabel, subjectLabel }: Pr
           </fieldset>
 
           {/* Line 2 — Subject */}
-          <fieldset className={`line ${cls ? '' : 'line--wait'}`} style={{ ['--d' as string]: '90ms' }}>
+          <fieldset
+            className={`line ${cls ? '' : 'line--wait'}`}
+            style={{ ['--d' as string]: '90ms' }}
+          >
             <legend className="line-key">Subject</legend>
-            <div className="chalks" role="group" aria-label="Subject">
+            <div className="chalks">
               {!cls && <span className="line-hint">— pick a class first</span>}
-              {cls && subjects.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  className={`chalk ${subject === s ? 'chalk--on' : ''}`}
-                  style={{ ['--sc' as string]: subVar(s) }}
-                  aria-pressed={subject === s}
-                  onClick={() => pickSubject(s)}
-                >
-                  {subjectLabel[s] ?? s}
-                </button>
-              ))}
+              {cls &&
+                subjects.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={`chalk ${subject === s ? 'chalk--on' : ''}`}
+                    style={{ ['--sc' as string]: subVar(s) }}
+                    aria-pressed={subject === s}
+                    onClick={() => pickSubject(s)}
+                  >
+                    {subjectLabel[s] ?? s}
+                  </button>
+                ))}
             </div>
           </fieldset>
 
           {/* Line 3 — Language */}
-          <fieldset className={`line ${subject ? '' : 'line--wait'}`} style={{ ['--d' as string]: '180ms' }}>
+          <fieldset
+            className={`line ${subject ? '' : 'line--wait'}`}
+            style={{ ['--d' as string]: '180ms' }}
+          >
             <legend className="line-key">Language</legend>
-            <div className="chalks" role="group" aria-label="Language">
+            <div className="chalks">
               {!subject && <span className="line-hint">— then a subject</span>}
-              {subject && langs.map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  className={`chalk ${lang === l ? 'chalk--on' : ''}`}
-                  aria-pressed={lang === l}
-                  onClick={() => setLang(l)}
-                  lang={l}
-                >
-                  {l === 'hi' ? 'हिंदी' : 'English'}
-                </button>
-              ))}
+              {subject &&
+                langs.map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    className={`chalk ${lang === l ? 'chalk--on' : ''}`}
+                    aria-pressed={lang === l}
+                    onClick={() => setLang(l)}
+                    lang={l}
+                  >
+                    {l === 'hi' ? 'हिंदी' : 'English'}
+                  </button>
+                ))}
             </div>
           </fieldset>
 
@@ -129,7 +165,9 @@ export default function Board({ entries, classes, classLabel, subjectLabel }: Pr
             {chosen ? (
               <>
                 <p className="result-title">{chosen.title}</p>
-                <a className="result-open" href={target ?? '#'}>Open this book →</a>
+                <a className="result-open" href={target ?? '#'}>
+                  Open this book →
+                </a>
               </>
             ) : (
               <p className="result-blank">

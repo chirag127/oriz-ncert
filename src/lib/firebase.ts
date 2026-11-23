@@ -7,14 +7,14 @@
  * Returns null when env is unset (local dev without secrets) so islands
  * degrade to signed-in-but-no-persistence instead of throwing.
  */
-import { initializeApp, getApps, type FirebaseApp } from 'firebase/app'
+import { type FirebaseApp, getApps, initializeApp } from 'firebase/app'
 import {
-  getFirestore,
   doc,
-  getDoc,
-  setDoc,
-  serverTimestamp,
   type Firestore,
+  getDoc,
+  getFirestore,
+  serverTimestamp,
+  setDoc,
 } from 'firebase/firestore'
 
 const cfg = {

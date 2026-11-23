@@ -9,8 +9,9 @@
  * Fully optional — if every provider fails, the whole panel hides itself.
  * Lazy: mounted client:visible so it adds no first-paint JS.
  */
-import { useCallback, useMemo, useRef, useState } from 'react'
+
 import { complete } from '@chirag127/oz-ai'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 interface Props {
   bookTitle: string
@@ -90,27 +91,15 @@ export default function ChapterAI({ bookTitle, className, subject, chapters }: P
           </select>
         </label>
         <div className="cai-actions">
-          <button
-            type="button"
-            className="cai-btn"
-            onClick={() => run('explain')}
-            disabled={busy}
-          >
+          <button type="button" className="cai-btn" onClick={() => run('explain')} disabled={busy}>
             {busy && mode === 'explain' ? 'thinking…' : 'explain simpler'}
           </button>
-          <button
-            type="button"
-            className="cai-btn"
-            onClick={() => run('practice')}
-            disabled={busy}
-          >
+          <button type="button" className="cai-btn" onClick={() => run('practice')} disabled={busy}>
             {busy && mode === 'practice' ? 'thinking…' : 'practice questions'}
           </button>
         </div>
       </div>
-      {(busy || out) && (
-        <output className="cai-out">{busy ? 'chalking it out…' : out}</output>
-      )}
+      {(busy || out) && <output className="cai-out">{busy ? 'chalking it out…' : out}</output>}
       <p className="cai-note">AI-generated. Verify against the textbook.</p>
 
       <style>{`

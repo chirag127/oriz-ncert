@@ -15,7 +15,8 @@ const classLabelMap: Record<string, string> = {}
 for (const c of CLASSES) classLabelMap[c] = classLabel(c)
 
 const subjectLabelMap: Record<string, string> = {}
-for (const e of catalog) if (!subjectLabelMap[e.subject]) subjectLabelMap[e.subject] = subjectLabel(e.subject)
+for (const e of catalog)
+  if (!subjectLabelMap[e.subject]) subjectLabelMap[e.subject] = subjectLabel(e.subject)
 for (const s of ['math', 'science', 'english', 'hindi', 'social-science', 'evs']) {
   if (!subjectLabelMap[s]) subjectLabelMap[s] = subjectLabel(s)
 }
