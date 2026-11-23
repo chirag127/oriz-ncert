@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { loadShelf, saveShelf } from '~/lib/firebase'
 import { withClerk } from './clerk'
 
-function SaveInner({ bookKey, title }: { bookKey: string; title: string }) {
+function SaveInner({ bookKey }: { bookKey: string }) {
   const { user } = useUser()
   const [saved, setSaved] = useState<string[]>([])
   const [busy, setBusy] = useState(false)
@@ -49,11 +49,11 @@ function SaveInner({ bookKey, title }: { bookKey: string; title: string }) {
   )
 }
 
-export default function SaveBook({ bookKey, title }: { bookKey: string; title: string }) {
+export default function SaveBook({ bookKey }: { bookKey: string }) {
   return withClerk(
     <div className="save-wrap">
       <SignedIn>
-        <SaveInner bookKey={bookKey} title={title} />
+        <SaveInner bookKey={bookKey} />
       </SignedIn>
       <SignedOut>
         <SignInButton mode="modal">
