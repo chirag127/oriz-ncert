@@ -5,3 +5,19 @@ jobs:
     uses: chirag127/workflows/.github/workflows/ci-astro-pwa.yml@main
     secrets: inherit
 # retrigger: 2026-07-03 (post chirag127/workflows @ 653f82f)
+  unit-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.34.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm test

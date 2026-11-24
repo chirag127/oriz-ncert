@@ -11,13 +11,13 @@ export default function AccountButton() {
     <span className="acct">
       <SignedOut>
         <SignInButton mode="modal">
-          <button type="button" className="acct-btn">Sign in</button>
+          <button type="button" className="acct-btn">
+            Sign in
+          </button>
         </SignInButton>
       </SignedOut>
       <SignedIn>
-        <UserButton
-          appearance={{ elements: { avatarBox: { width: 30, height: 30 } } }}
-        />
+        <UserButton appearance={{ elements: { avatarBox: { width: 30, height: 30 } } }} />
       </SignedIn>
       <style>{`
         .acct { display: inline-flex; align-items: center; }

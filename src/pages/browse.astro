@@ -12,8 +12,15 @@ const order = (c: string) => (c === 'pre-primary' ? -1 : Number.parseInt(c, 10))
 const classesInOrder = [...new Set(catalog.map((e) => e.class))].sort((a, b) => order(a) - order(b))
 
 const DISC: Record<string, string> = {
-  math: 'maths', science: 'science', physics: 'science', chemistry: 'science', biology: 'science', evs: 'science',
-  english: 'lang', hindi: 'lang', rimjhim: 'early',
+  math: 'maths',
+  science: 'science',
+  physics: 'science',
+  chemistry: 'science',
+  biology: 'science',
+  evs: 'science',
+  english: 'lang',
+  hindi: 'lang',
+  rimjhim: 'early',
 }
 const disc = (s: string) => DISC[s] ?? 'social'
 const total = catalog.length

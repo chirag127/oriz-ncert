@@ -16,8 +16,15 @@ const label = classLabel(cls as string)
 const title = `${label} — oriz · ncert`
 
 const DISC: Record<string, string> = {
-  math: 'maths', science: 'science', physics: 'science', chemistry: 'science', biology: 'science', evs: 'science',
-  english: 'lang', hindi: 'lang', rimjhim: 'early',
+  math: 'maths',
+  science: 'science',
+  physics: 'science',
+  chemistry: 'science',
+  biology: 'science',
+  evs: 'science',
+  english: 'lang',
+  hindi: 'lang',
+  rimjhim: 'early',
 }
 const disc = (s: string) => DISC[s] ?? 'social'
 ---

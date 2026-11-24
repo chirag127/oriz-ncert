@@ -4,12 +4,13 @@
  * "Save to my shelf" for signed-in readers, persisted to Firestore keyed by
  * Clerk user id. Signed-out → a prompt to sign in. No key → renders nothing.
  */
-import { useEffect, useState } from 'react'
-import { SignedIn, SignedOut, SignInButton, useUser } from '@clerk/clerk-react'
-import { withClerk } from './clerk'
-import { loadShelf, saveShelf } from '~/lib/firebase'
 
-function SaveInner({ bookKey, title }: { bookKey: string; title: string }) {
+import { SignedIn, SignedOut, SignInButton, useUser } from '@clerk/clerk-react'
+import { useEffect, useState } from 'react'
+import { loadShelf, saveShelf } from '~/lib/firebase'
+import { withClerk } from './clerk'
+
+function SaveInner({ bookKey }: { bookKey: string }) {
   const { user } = useUser()
   const [saved, setSaved] = useState<string[]>([])
   const [busy, setBusy] = useState(false)
@@ -17,7 +18,9 @@ function SaveInner({ bookKey, title }: { bookKey: string; title: string }) {
 
   useEffect(() => {
     if (!user) return
-    loadShelf(user.id).then(setSaved).catch(() => {})
+    loadShelf(user.id)
+      .then(setSaved)
+      .catch(() => {})
   }, [user])
 
   async function toggle() {
@@ -25,26 +28,38 @@ function SaveInner({ bookKey, title }: { bookKey: string; title: string }) {
     setBusy(true)
     const next = on ? saved.filter((k) => k !== bookKey) : [...saved, bookKey]
     setSaved(next)
-    try { await saveShelf(user.id, next) } catch { setSaved(saved) }
+    try {
+      await saveShelf(user.id, next)
+    } catch {
+      setSaved(saved)
+    }
     setBusy(false)
   }
 
   return (
-    <button type="button" className={`save-btn ${on ? 'save-btn--on' : ''}`} onClick={toggle} disabled={busy} aria-pressed={on}>
+    <button
+      type="button"
+      className={`save-btn ${on ? 'save-btn--on' : ''}`}
+      onClick={toggle}
+      disabled={busy}
+      aria-pressed={on}
+    >
       {on ? 'On your shelf' : 'Save to my shelf'}
     </button>
   )
 }
 
-export default function SaveBook({ bookKey, title }: { bookKey: string; title: string }) {
+export default function SaveBook({ bookKey }: { bookKey: string }) {
   return withClerk(
     <div className="save-wrap">
       <SignedIn>
-        <SaveInner bookKey={bookKey} title={title} />
+        <SaveInner bookKey={bookKey} />
       </SignedIn>
       <SignedOut>
         <SignInButton mode="modal">
-          <button type="button" className="save-btn">Sign in to save this book</button>
+          <button type="button" className="save-btn">
+            Sign in to save this book
+          </button>
         </SignInButton>
       </SignedOut>
       <style>{`
