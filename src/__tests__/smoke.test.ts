@@ -59,7 +59,19 @@ describe('NCERT catalog', () => {
   it('includes pre-primary followed by every school class exactly once', async () => {
     const { CLASSES } = await import('../lib/catalog')
     expect(CLASSES).toEqual([
-      'pre-primary', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+      'pre-primary',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '10',
+      '11',
+      '12',
     ])
   })
 })
