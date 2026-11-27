@@ -1,10 +1,16 @@
-import type { OrizSiteConfig } from '@chirag127/astro-shell/types'
+interface SiteConfig {
+  slug: string
+  name: string
+  origin: string
+  tagline: string
+  description?: string
+}
 
-export const SITE_CONFIG: OrizSiteConfig = {
+export const SITE_CONFIG: SiteConfig = {
   slug: 'ncert',
-  name: 'NCERT',
-  origin: 'https://ncert.oriz.in',
-  tagline: 'NCERT textbook directory — browse, search, and download for free.',
+  name: 'oriz · ncert',
+  origin: 'https://oriz-ncert.pages.dev',
+  tagline: 'chalk in the book you need',
   description:
-    'A free, open directory of NCERT textbooks (Pre-Primary through Class XII). Browse by class, subject, and language; download merged whole-book PDFs from GitHub Releases.',
+    'Free NCERT textbooks — every class, subject, and language as one whole-book PDF. Chalk in a class and subject, then open straight from the official ncert.nic.in chapter files. No ads, no sign-in to read.',
 }

@@ -1,0 +1,57 @@
+/*
+ * ui-overrides.css — paints the plain-HTML contact form (contact.astro)
+ * data-contact-* hooks in the Reading Room palette (ruled study-paper).
+ */
+[data-contact] {
+  font-family: var(--font-body);
+  color: var(--ink);
+  max-width: 560px;
+}
+[data-contact] label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--mist);
+  margin: 1rem 0 0.375rem;
+}
+[data-contact] input,
+[data-contact] textarea {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--rule-line);
+  border-bottom: 2px solid var(--blue);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0;
+}
+[data-contact] input:focus,
+[data-contact] textarea:focus {
+  outline: none;
+  border-bottom-color: var(--marker);
+}
+[data-contact] button[type='submit'] {
+  margin-top: 1.25rem;
+  height: 46px;
+  padding-inline: 1.5rem;
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 0;
+}
+[data-contact] button[type='submit']:hover:not(:disabled) {
+  background: var(--blue-deep);
+}
+[data-contact-status] {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--mist);
+}

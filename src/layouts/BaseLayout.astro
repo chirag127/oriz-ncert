@@ -5,27 +5,22 @@
  * Chrome composition (per locked policy):
  *   - Header:    LOCAL (~/components/Header.astro) — fully divergent per-app
  *                with class/subject filter toggle for the home filter rail.
- *   - Sidebar:   @chirag127/astro-chrome/Sidebar.astro — shared drawer shell,
+ *   - Sidebar:   LOCAL (~/components/Sidebar.astro) — CSS-only drawer shell,
  *                per-app slot content (AppSidebarContent → class/subject nav).
- *   - Footer:    @chirag127/astro-chrome/Footer.astro — shared mega-sitemap.
- *   - BottomBar: @chirag127/astro-chrome/BottomBar.astro — shared structure,
- *                per-app icons (Home/Classes/Search/Downloads/Menu).
+ *   - Footer:    LOCAL (~/components/Footer.astro) — mega-sitemap + LegalFooter.
+ *   - BottomBar: LOCAL (~/components/BottomBar.astro) — mobile nav
+ *                (Home/Classes/Search/Downloads/Menu).
  */
 import '~/styles/global.css'
-import '~/styles/oriz-ui-overrides.css'
-import '@chirag127/astro-shell/tokens.css'
+import '~/styles/ui-overrides.css'
 import '~/styles/tokens.css'
-import '@fontsource-variable/inter-tight'
-import '@fontsource-variable/inter'
-import '@fontsource/ibm-plex-mono'
-import Header from '~/components/Header.astro'
 import AppSidebarContent from '~/components/AppSidebarContent.astro'
-import Sidebar from '@chirag127/astro-chrome/Sidebar.astro'
+import BottomBar from '~/components/BottomBar.astro'
 import Footer from '~/components/Footer.astro'
-import BottomBar from '@chirag127/astro-chrome/BottomBar.astro'
-import FamilyChrome from '@chirag127/astro-shell/components/FamilyChrome.astro'
-import { SITE_CONFIG } from '~/lib/siteConfig'
+import Header from '~/components/Header.astro'
+import Sidebar from '~/components/Sidebar.astro'
 import { bottomBarActions } from '~/data/bottombar-actions'
+import { SITE_CONFIG } from '~/lib/siteConfig'
 
 interface Props {
   title?: string
@@ -68,12 +63,16 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN
     <meta name="twitter:site" content="@chirag127" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#10201c" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1917" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Devanagari:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Baloo+2:wght@500;600&display=swap"
     />
 
     {
@@ -96,18 +95,8 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN
         />
       )
     }
-
-    {import.meta.env.PUBLIC_ADSENSE_CLIENT && (
-      <script
-        is:inline
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.PUBLIC_ADSENSE_CLIENT}`}
-        crossorigin="anonymous"
-      />
-    )}
   </head>
   <body>
-    <FamilyChrome slug="oriz-ncert-app" title="NCERT" accent="#c08a26" />
     <a href="#main" class="skip-link">Skip to content</a>
     {hideHeader ? (
       <main id="main"><slot /></main>
@@ -129,8 +118,21 @@ const beaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN
       .layout-main { flex: 1 1 auto; min-width: 0; min-height: 50vh; }
       @media (max-width: 767px) {
         .layout-body { display: block; }
-        .layout-main { padding-bottom: 64px; }
+        /* Clear the fixed 64px bottom bar on every page (main + footer),
+           plus a gap and the iOS home-indicator safe area. */
+        body {
+          padding-bottom: calc(64px + 16px + env(safe-area-inset-bottom, 0px));
+        }
+        html { scroll-padding-bottom: calc(64px + 16px + env(safe-area-inset-bottom, 0px)); }
+        .layout-main { padding-bottom: 0; }
       }
     </style>
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {})
+        })
+      }
+    </script>
   </body>
 </html>

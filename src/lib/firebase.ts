@@ -1,18 +1,23 @@
 /**
- * Firebase singleton — Books shares the oriz-app Firebase project so a
- * logged-in user is logged in across every *.oriz.in subdomain.
+ * firebase.ts — Firestore-only client for the shared oriz-in project.
+ * Init from PUBLIC_FIREBASE_* env (never hardcoded). Auth is Clerk's job, not
+ * Firebase's — we use Firestore purely to persist small per-user data keyed by
+ * the Clerk user id (bookshelf / recently-downloaded).
  *
- * Lazy proxy pattern (copied verbatim from oriz-home/src/lib/firebase.ts):
- * `getApps()[0] ?? initializeApp(config)` plus deferred `getAuth()` /
- * `getFirestore()` so server-side prerender of pages that import a React
- * island doesn't crash when env vars are missing on the build runner —
- * only the BROWSER needs the auth instance.
+ * Returns null when env is unset (local dev without secrets) so islands
+ * degrade to signed-in-but-no-persistence instead of throwing.
  */
-import { type FirebaseApp, getApps, initializeApp } from 'firebase/app'
-import { type Auth, getAuth } from 'firebase/auth'
-import { type Firestore, getFirestore } from 'firebase/firestore'
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app'
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  type Firestore,
+} from 'firebase/firestore'
 
-const config = {
+const cfg = {
   apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY,
   authDomain: import.meta.env.PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
@@ -21,32 +26,33 @@ const config = {
   appId: import.meta.env.PUBLIC_FIREBASE_APP_ID,
 }
 
-let _app: FirebaseApp | null = null
-let _auth: Auth | null = null
-let _db: Firestore | null = null
+let db: Firestore | null = null
 
-function getApp(): FirebaseApp {
-  if (_app) return _app
-  _app = getApps()[0] ?? initializeApp(config)
-  return _app
+export function getDb(): Firestore | null {
+  if (db) return db
+  if (!cfg.apiKey || !cfg.projectId) return null
+  const app: FirebaseApp = getApps()[0] ?? initializeApp(cfg)
+  db = getFirestore(app)
+  return db
 }
 
-export const auth: Auth = new Proxy({} as Auth, {
-  get(_t, p) {
-    if (!_auth) _auth = getAuth(getApp())
-    return Reflect.get(_auth, p)
-  },
-}) as Auth
+/** Firestore path for a user's ncert shelf, keyed by Clerk user id. */
+const shelfRef = (fs: Firestore, uid: string) => doc(fs, 'ncert_shelves', uid)
 
-export const db: Firestore = new Proxy({} as Firestore, {
-  get(_t, p) {
-    if (!_db) _db = getFirestore(getApp())
-    return Reflect.get(_db, p)
-  },
-}) as Firestore
+export interface Shelf {
+  saved: string[] // book keys like "10/science/en"
+  updatedAt?: unknown
+}
 
-export const app: FirebaseApp = new Proxy({} as FirebaseApp, {
-  get(_t, p) {
-    return Reflect.get(getApp(), p)
-  },
-}) as FirebaseApp
+export async function loadShelf(uid: string): Promise<string[]> {
+  const fs = getDb()
+  if (!fs) return []
+  const snap = await getDoc(shelfRef(fs, uid))
+  return (snap.exists() ? (snap.data() as Shelf).saved : []) ?? []
+}
+
+export async function saveShelf(uid: string, saved: string[]): Promise<void> {
+  const fs = getDb()
+  if (!fs) return
+  await setDoc(shelfRef(fs, uid), { saved, updatedAt: serverTimestamp() })
+}
