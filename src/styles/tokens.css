@@ -1,124 +1,107 @@
 /*
- * tokens.css — MD3 dark-first theme (2026-07-08).
+ * tokens.css — "Register & Chalk" (2026-08-05 full redesign).
  *
- * Replaces the v0 parchment/light palette with Material Design 3 dark tokens.
- * Legacy aliases (--paper, --ink, --cinnabar, --rule, etc.) are remapped so
- * existing components keep working with zero per-component edits.
+ * Subject world: NCERT classroom. Artifacts borrowed: the school blackboard +
+ * yellow chalk, the printed class timetable, the exam roll-number gutter, the
+ * ruled attendance register. Calm mineral-paper study surface with ONE bold
+ * dark chalkboard moment (the picker). Deliberately NOT the prior warm-cream +
+ * serif + terracotta look, and NOT a library/bookshelf metaphor.
+ *
+ * Palette (6): cool mineral study paper, slate-ink text, chalkboard-teal (the
+ * one dark surface), yellow chalk-ochre (primary accent), chalk-rose
+ * (corrections, sparing), cool sage (links / rest).
  */
 
-/* MD3 dark tokens */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
-
 :root,
-:root[data-theme],
 html {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* MD3 surface scale */
-  --md-surface: #0f0d13;
-  --md-surface-container-low: #1d1b20;
-  --md-surface-container: #211f26;
-  --md-surface-container-high: #2b2930;
-  --md-surface-container-highest: #36343b;
+  /* Surface — cool mineral paper, NOT warm cream */
+  --paper: #f3f5f4;        /* pale mineral study paper */
+  --paper-2: #e9edeb;      /* card / recessed register row */
+  --paper-3: #dde3e0;      /* hover stripe / deeper recess */
+  --ink: #1b2b2a;          /* slate-teal ink */
+  --mist: #5a6866;         /* graphite-sage — secondary text */
+  --rule-line: #cdd6d2;    /* register hairline */
 
-  /* MD3 primary (purple) */
-  --md-primary: #d0bcff;
-  --md-on-primary: #381e72;
-  --md-primary-container: #4f378b;
-  --md-on-primary-container: #eaddff;
+  /* The one dark surface — the blackboard */
+  --board: #10201c;        /* chalkboard green-black */
+  --board-2: #16302a;      /* raised board panel */
+  --chalk: #eef2ea;        /* chalk-white on the board */
+  --chalk-dim: #9db4a6;    /* faded chalk */
 
-  /* MD3 secondary */
-  --md-secondary: #ccc2dc;
-  --md-secondary-container: #4a4458;
-  --md-on-secondary-container: #e8def8;
+  /* Accents */
+  --ochre: #e2a72e;        /* yellow chalk — primary accent */
+  --ochre-deep: #b9851b;
+  --sage: #2f8f77;         /* cool sage — links / restful accent */
+  --sage-deep: #226b59;
+  --rose: #c85a6b;         /* chalk-rose — corrections, sparing */
 
-  /* MD3 outline */
-  --md-outline: #938f99;
-  --md-outline-variant: #49454f;
+  /* Subject accents (derived, restrained) — timetable colour code */
+  --sub-maths: #c85a6b;    /* rose */
+  --sub-science: #2f8f77;  /* sage */
+  --sub-lang: #3f77b0;     /* slate-blue */
+  --sub-social: #e2a72e;   /* ochre */
+  --sub-early: #8a6bb0;    /* violet */
 
-  /* MD3 on-surface */
-  --md-on-surface: #e6e1e5;
-  --md-on-surface-variant: #cac4d0;
+  /* Type roles — slab display, humanist body, register mono */
+  --font-display: 'Zilla Slab', 'Roboto Slab', Georgia, serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-deva: 'Baloo 2', 'Noto Sans Devanagari', var(--font-body);
 
-  /* MD3 shape */
-  --md-shape-sm: 8px;
-  --md-shape-md: 12px;
-  --md-shape-lg: 16px;
-  --md-shape-xl: 28px;
+  /* Rhythm */
+  --spine-max: 1160px;
+  --prose-max: 720px;
+  --gutter: 3.5rem; /* the roll-number left gutter */
 
-  /* MD3 type */
-  --md-font-display: "Google Sans Display", "Google Sans", Roboto, sans-serif;
-  --md-font-body: "Google Sans Text", "Google Sans", Roboto, sans-serif;
-  --md-font-mono: "Roboto Mono", monospace;
-
-  /* MD3 color palette vars for direct use */
-  --color-bg: var(--md-surface);
-  --color-fg: var(--md-on-surface);
-  --color-accent: var(--md-primary);
-  --color-saffron: #f59e0b;
-  --color-muted: var(--md-on-surface-variant);
-  --color-border: var(--md-outline-variant);
-
-  /* Type stack */
-  --font-display: var(--md-font-display);
-  --font-body: var(--md-font-body);
-  --font-utility: var(--md-font-mono);
-
-  /* Legacy alias remap — surface */
-  --paper: var(--md-surface);
-  --paper-deep: #07090c;
-  --card: var(--md-surface-container);
-  --card-shade: var(--md-surface-container-high);
-  --ink: var(--md-on-surface);
-  --ink-mute: var(--md-on-surface-variant);
-  --rule: var(--md-outline-variant);
-
-  /* Legacy alias remap — accents */
-  --cinnabar: var(--md-primary);
-  --indigo: var(--md-primary-container);
-  --brass: #a89968;
-  --graphite: var(--md-on-surface);
-  --graphite-soft: var(--md-on-surface-variant);
-
-  /* Card-on-card text */
-  --on-card: var(--md-on-surface);
-  --on-card-mute: var(--md-on-surface-variant);
-  --on-card-rule: var(--md-outline-variant);
-
-  /* Borrowed-selector aliases */
-  --mustard: var(--color-saffron);
-  --vermilion: var(--md-primary);
-  --ledger: var(--color-saffron);
-  --highlighter: var(--md-primary);
-
-  /* Font remap (legacy --font-sans/--font-mono) */
-  --font-sans: var(--font-body);
-  --font-mono: var(--font-utility);
+  /* Legacy aliases so untouched borrowed selectors still resolve */
+  --color-bg: var(--paper);
+  --color-fg: var(--ink);
+  --color-accent: var(--sage);
+  --color-muted: var(--mist);
+  --color-border: var(--rule-line);
+  --color-saffron: var(--ochre);
+  --font-utility: var(--font-mono);
+  --card: var(--paper-2);
+  --cinnabar: var(--rose);
+  --brass: var(--ochre);
+  --graphite: var(--ink);
+  --graphite-soft: var(--mist);
+  /* prior-theme names still referenced by borrowed components */
+  --blue: var(--sage);
+  --blue-deep: var(--sage-deep);
+  --marker: var(--rose);
+  --shelf: var(--ochre);
+  --spine-maths: var(--sub-maths);
+  --spine-science: var(--sub-science);
+  --spine-lang: var(--sub-lang);
+  --spine-social: var(--sub-social);
+  --spine-early: var(--sub-early);
 }
 
-/* Override global.css's @media color-scheme blocks — dark-first, always. */
-@media (prefers-color-scheme: dark),
-       (prefers-color-scheme: light) {
-  :root {
+@media (prefers-color-scheme: dark) {
+  :root,
+  html {
     color-scheme: dark;
-    --paper: var(--md-surface);
-    --card: var(--md-surface-container);
-    --ink: var(--md-on-surface);
-    --ink-mute: var(--md-on-surface-variant);
-    --rule: var(--md-outline-variant);
-    --cinnabar: var(--md-primary);
-    --indigo: var(--md-primary-container);
-    --brass: #a89968;
+    --paper: #0f1917;      /* dimmed study desk at night */
+    --paper-2: #16221f;
+    --paper-3: #1d2b27;
+    --ink: #e8efe9;
+    --mist: #93a49e;
+    --rule-line: #2a3a35;
+    --board: #0a1512;
+    --board-2: #122420;
+    --chalk: #eef2ea;
+    --chalk-dim: #8aa295;
+    --ochre: #ecc05a;
+    --ochre-deep: #d5a637;
+    --sage: #57c0a4;
+    --sage-deep: #3f9d84;
+    --rose: #e08494;
   }
 }
 
-body {
-  background: var(--md-surface) !important;
-  color: var(--md-on-surface-variant) !important;
-  font-family: var(--md-font-body) !important;
+@media (prefers-contrast: more) {
+  :root { --mist: #3c4a47; --rule-line: #a6b2ad; }
 }
-
-a { color: var(--md-primary); }
-h1, h2, h3, h4 { font-family: var(--md-font-display); color: var(--md-on-surface); }
-code, pre { font-family: var(--md-font-mono); }
-pre { background: var(--md-surface-container-high); padding: 16px; border-radius: 12px; }
