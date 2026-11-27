@@ -1,5 +1,6 @@
 ---
 import BookDetail from '~/components/BookDetail.tsx'
+import ChapterAI from '~/components/ChapterAI.tsx'
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import { loadBooks } from '~/lib/books'
 import { SITE_CONFIG } from '~/lib/siteConfig'
@@ -40,5 +41,12 @@ const jsonLd = {
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
   <div class="spine">
     <BookDetail book={book} client:load />
+    <ChapterAI
+      bookTitle={book.title}
+      className={book.class.replace('class-', 'Class ').replace('balvatika-', 'Balvatika ')}
+      subject={book.subject}
+      chapters={book.chapters.map((c) => c.name)}
+      client:visible
+    />
   </div>
 </BaseLayout>
