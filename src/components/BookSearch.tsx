@@ -143,17 +143,18 @@ export default function BookSearch() {
         .bs-input-wrap { margin-bottom: 1rem; }
         .bs-input {
           width: 100%;
-          height: 48px;
+          height: 52px;
           padding-inline: 1rem;
-          background: var(--card);
-          color: var(--graphite);
-          border: 1px solid var(--brass);
+          background: var(--paper-2);
+          color: var(--ink);
+          border: 1px solid var(--rule-line);
+          border-bottom: 2px solid var(--blue);
           border-radius: 0;
-          font-family: var(--font-sans);
-          font-size: 15px;
+          font-family: var(--font-body);
+          font-size: 1.05rem;
         }
-        .bs-input::placeholder { color: var(--graphite-soft); }
-        .bs-input:focus { outline: none; border-color: var(--cinnabar); }
+        .bs-input::placeholder { color: var(--mist); }
+        .bs-input:focus { outline: none; border-bottom-color: var(--marker); }
 
         .bs-filters {
           display: flex;
@@ -162,36 +163,34 @@ export default function BookSearch() {
           margin-bottom: 1rem;
         }
         .bs-filters select {
-          height: 32px;
+          height: 34px;
           padding-inline: 0.625rem;
           background: var(--paper);
           color: var(--ink);
-          border: 1px solid var(--rule);
+          border: 1px solid var(--rule-line);
           border-radius: 0;
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: 0.72rem;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          font-feature-settings: 'tnum' 1, 'zero' 1, 'ss20' 1, 'calt' 0;
         }
-        .bs-filters select:hover { border-color: var(--cinnabar); }
-        .bs-filters select:focus { outline: none; border-color: var(--cinnabar); }
+        .bs-filters select:hover { border-color: var(--blue); }
+        .bs-filters select:focus { outline: none; border-color: var(--blue); }
 
         .bs-meta {
           margin: 1rem 0;
-          color: var(--ink-mute);
+          color: var(--mist);
           font-family: var(--font-mono);
-          font-size: 11px;
+          font-size: 0.72rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          font-feature-settings: 'tnum' 1, 'zero' 1, 'ss20' 1, 'calt' 0;
         }
 
         .bs-results {
           list-style: none;
           padding: 0;
           margin: 0;
-          border-top: 1px solid var(--rule);
+          border-top: 1px solid var(--rule-line);
         }
         .bs-results li { margin: 0; }
         .bs-results a {
@@ -199,36 +198,34 @@ export default function BookSearch() {
           grid-template-columns: 6rem 1fr auto;
           gap: 1rem;
           align-items: baseline;
-          padding: 0.75rem 0.5rem;
+          padding: 0.8rem 0.5rem;
           color: var(--ink);
           text-decoration: none;
-          border-bottom: 1px solid var(--rule);
+          border-bottom: 1px solid var(--rule-line);
           border-left: 2px solid transparent;
         }
         .bs-results a:hover {
-          background: color-mix(in oklab, var(--brass) 8%, transparent);
-          border-left-color: var(--cinnabar);
+          background: var(--paper-2);
+          border-left-color: var(--marker);
         }
         .r-code {
-          color: var(--ink-mute);
+          color: var(--mist);
           font-family: var(--font-mono);
-          font-size: 11px;
-          letter-spacing: 0.08em;
-          font-feature-settings: 'tnum' 1, 'zero' 1, 'ss20' 1, 'calt' 0;
+          font-size: 0.72rem;
+          letter-spacing: 0.06em;
         }
         .r-title {
-          font-family: var(--font-display);
-          font-size: 1rem;
+          font-family: var(--font-body);
+          font-size: 1.05rem;
           line-height: 1.3;
           color: var(--ink);
         }
         .r-meta {
-          color: var(--ink-mute);
+          color: var(--mist);
           font-family: var(--font-mono);
-          font-size: 10px;
-          letter-spacing: 0.08em;
+          font-size: 0.66rem;
+          letter-spacing: 0.06em;
           text-align: right;
-          font-feature-settings: 'tnum' 1, 'zero' 1, 'ss20' 1, 'calt' 0;
         }
         @media (max-width: 640px) {
           .bs-results a { grid-template-columns: 1fr; gap: 0.25rem; }

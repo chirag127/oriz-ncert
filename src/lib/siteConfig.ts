@@ -8,9 +8,9 @@ interface SiteConfig {
 
 export const SITE_CONFIG: SiteConfig = {
   slug: 'ncert',
-  name: 'NCERT',
+  name: 'oriz · ncert',
   origin: 'https://oriz-ncert.pages.dev',
-  tagline: 'NCERT textbook directory — browse, search, and download for free.',
+  tagline: 'chalk in the book you need',
   description:
-    'A free, open directory of NCERT textbooks (Pre-Primary through Class XII). Browse by class, subject, and language; download merged whole-book PDFs from GitHub Releases.',
+    'Free NCERT textbooks — every class, subject, and language as one whole-book PDF. Chalk in a class and subject, then open straight from the official ncert.nic.in chapter files. No ads, no sign-in to read.',
 }
